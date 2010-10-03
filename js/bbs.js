@@ -11,14 +11,7 @@ var bbs = {
 		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
 		     '</div>',
 
-	input_restmp: '<p class="input-res">'
-		          + '<textarea class="input-res-text" rows="4"></textarea>'
-	  	          + '<p class="input-res-button">'
-    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="clear" />'
-    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="submit" />'
-                  + '</p>'
-	  	      + '</p>'
-	,
+	input_restmp: null,
 
 	init: function() {
 		var self = this;
@@ -193,8 +186,6 @@ var bbs = {
 	buildResInput: function(target) {
 		//response’¤ò’É½’¼¨’¤¹’¤ë’ÎÎ’°è’¤ò’³Î’ÊÝ
 		var tmp = bbs.input_restmp;
-
-
 
 		//clear’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
 		$('input[value="clear"]', tmp).click(function() {
