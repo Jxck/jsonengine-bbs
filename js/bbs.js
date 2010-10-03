@@ -1,41 +1,47 @@
 //log = function(a){ 	if(console.log) console.log(a);};
-je = mock;
+//je = mock;
 var bbs = {
 	baseObj: null,
 	docType: 'bbs',
-	init : function(){
-		var that = this;
-		$('.topic .input-res-button[value=response]').live('click', function(){
-			var tmp = that.buildResInput();
+	init: function() {
+		var self = this;
+		$('.topic .input-res-button[value=response]').live('click', function() {
+			var tmp = self.buildResInput();
 			tmp.insertAfter($(this).parent());
 			$(this).parent().remove();
 		});
 
-		$('.topic .input-res-button[value=delete]').live('click', function(){
+		$('.topic .input-res-button[value=delete]').live('click', function() {
 			var _docId = $(this).parents('div.topic').attr('id');
-			if(confirm('really?')){
-				var callback = function(data){
-					var response = JSON.parse(data.response);					
+			if (confirm('really?')) {
+				var callback = function(data) {
+					var response = JSON.parse(data.response);
 					response.push(data._docId);
-					for(var i=0; i<response.length; i++){
-						je.DELETE(bbs.docType,response[i],function(){});
-					} 
-					$('#'+data._docId).remove();
+					for (var i = 0; i < response.length; i++) {
+						je.DELETE(bbs.docType, response[i], function() {});
+					}
+					$('#' + data._docId).remove();
 				};
 				je.GET(bbs.docType, _docId, callback);
 			}
 		});
 
-		$('.delete-button').live('click',function(){
-			var resId=$(this).parents('.res').attr('id');
-			var topicId=$(this).parents().parents('.topic').attr('id');
-			
-			var callback = function(data){
+		$('.delete-button').live('click', function() {
+			var resId = $(this).parents('.res').attr('id');
+			var topicId = $(this).parents().parents('.topic').attr('id');
+
+			var callback = function(data) {
 				var tmparr = JSON.parse(data.response);
 				tmparr = bbs.deleteArrayElement(tmparr, topicId);
-				je.PUT(bbs.docType, topicId, {response :JSON.stringify(tmparr)}, function(){});
-				je.DELETE(bbs.docType, resId, function(){});
-				$('#'+resId).remove();
+
+				je.PUT(bbs.docType,
+					   topicId,
+					   {response: JSON.stringify(tmparr)},
+					   function() {}
+					  );
+
+				je.DELETE(bbs.docType, resId, function() {});
+				$('#' + resId).remove();
 			}
 			je.GET(bbs.docType, topicId, callback);
 		});
@@ -44,59 +50,59 @@ var bbs = {
 		this.buindSubmit();
 	},
 
-	baseView : function(id){
-		var $template=$(id);
+	baseView: function(id) {
+		var $template = $(id);
 		this.baseObj = $template.clone(true).removeAttr('id');
 		$template.hide();
 	},
 
-	buindSubmit : function(){
-		var that=this;
+	buindSubmit: function() {
+		var self = this;
 		//submit’¥Ü’¥¿’¥ó’¤Î’¥¤’¥Ù’¥ó’¥È’½è’Íý
-		$('#input-new-submit').click(function(){
-			var title=$('#new-topic input[type=text]').val();
-			var detail=$('#new-topic textarea').val();
-			if(title === '' || detail === ''){
+		$('#input-new-submit').click(function() {
+			var title = $('#new-topic input[type=text]').val();
+			var detail = $('#new-topic textarea').val();
+			if (title === '' || detail === '') {
 				return false;
-			};
-			that.postTopic(title,detail,'[]');
+			}
+			self.postTopic(title, detail, '[]');
 			$('#input-new-clear').click();
 		});
 
 		//clear’¥Ü’¥¿’¥ó’¤Î’¥¤’¥Ù’¥ó’¥È’½è’Íý
-		$('#input-new-clear').click(function(){
+		$('#input-new-clear').click(function() {
 			$('#new-topic input[type=text]').val('');
 			$('#new-topic textarea').val('');
 		});
 	},
 
-	postTopic : function(titleData, detailData, responseData){
+	postTopic: function(titleData, detailData, responseData) {
 		//’¥¿’¥¤’¥È’¥ë’¡¢’ËÜ’Ê¸’¡¢’ÊÖ’¿®’¤ò’¼õ’¤±’¼è’¤ê’¡¢post’¤¹’¤ë’¡£
-		var data = { 
-			title:titleData, 
-			detail:detailData, 
-			response:responseData
+		var data = {
+			title: titleData,
+			detail: detailData,
+			response: responseData
 		};
-		var callback = function(data){
+		var callback = function(data) {
 			bbs.getTopic(data._docId);
 		};
-		je.POST(bbs.docType,data,callback);
+		je.POST(bbs.docType, data, callback);
 	},
 
-	getTopic : function(_docId){
+	getTopic: function(_docId) {
 		//_docId’¤ò’¼õ’¤±’¼è’¤Ã’¤¿’¤é’¡¢’¤½’¤ì’¤ò’¸µ’¤Ë’¥É’¥­’¥å’¥á’¥ó’¥È’¤ò’¼è’ÆÀ’¤¹’¤ë’¡£
 		//’°ú’¿ô’¤¬’¤Ê’¤«’¤Ã’¤¿’¤é’¡¢docType’Á´’Éô’¤ò’¼õ’¤±’¼è’¤ë’¡£
 		//’¼õ’¤±’¼è’¤Ã’¤¿’¥É’¥­’¥å’¥á’¥ó’¥È’¤Ï’¡¢buildTopic’¤Ë’ÅÏ’¤¹’¡£
 		var callback = null;
 
-		if(_docId){
-			callback = function(res){
+		if (_docId) {
+			callback = function(res) {
 				bbs.buildTopic(res);
 			};
 			je.GET(bbs.docType, _docId, callback);
-		}else{
-			callback = function(res){
-				for (var i in res){
+		}else {
+			callback = function(res) {
+				for (var i in res) {
 					bbs.buildTopic(res[i]);
 				}
 			};
@@ -104,95 +110,95 @@ var bbs = {
 		}
 	},
 
-	deleteArrayElement : function(arr, elem){
-		for(var i = 0; i < arr.length; i++){
-			if(arr[i] === elem){
-				arr.splice(i,1);
+	deleteArrayElement: function(arr, elem) {
+		for (var i = 0; i < arr.length; i++) {
+			if (arr[i] === elem) {
+				arr.splice(i, 1);
 			}
 		}
-		return arr
+		return arr;
 	},
-	
-	restmp : '<div class="res ui-corner-all">'+
-		       '<span class="detail"></span>'+
-		       '<span class="_createdAt"></span>'+
-		       '<span class="_createdBy"></span>'+
-		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />'+
+
+	restmp: '<div class="res ui-corner-all">' +
+		       '<span class="detail"></span>' +
+		       '<span class="_createdAt"></span>' +
+		       '<span class="_createdBy"></span>' +
+		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
 		     '</div>',
 
-	restmpObj : function(responseDoc){
+	restmpObj: function(responseDoc) {
 		var resObj = $(bbs.restmp);
-		resObj.attr('id',responseDoc._docId);
-		bbs.displayMultiLineText($('.detail',resObj), responseDoc.resDetail);
-		$('._createdAt',resObj).text(responseDoc._createdAt);
-		$('._createdBy',resObj).text(responseDoc._createdBy);
+		resObj.attr('id', responseDoc._docId);
+		bbs.displayMultiLineText($('.detail', resObj), responseDoc.resDetail);
+		$('._createdAt', resObj).text(responseDoc._createdAt);
+		$('._createdBy', resObj).text(responseDoc._createdBy);
 		return resObj;
 	},
 
-	displayMultiLineText : function(area, multiLineText){
+	displayMultiLineText: function(area, multiLineText) {
 		// insert mutiline text to DOM area
 		// each texts are wrapped with <span></span>
 		// and add <br> at end of each line
 		var lineArray = multiLineText.split('\n');
-		for (var i=0; i<lineArray.length; i++){
+		for (var i = 0; i < lineArray.length; i++) {
 			area.append($('<span>').text(lineArray[i]));
 		}
-		$('span',area).after('<br>');
+		$('span', area).after('<br>');
 	},
 
-	buildTopic : function(doc){
+	buildTopic: function(doc) {
 		//’¼õ’¤±’¼è’¤Ã’¤¿doc’¤ò’¸µ’¤ËTopic’¤ò’ÁÈ’¤ß’Î©’¤Æ’É½’¼¨’¤¹’¤ë’¡£
 		//Topic’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¤’¥Ù’¥ó’¥È’¤È’°ì’½ï’¤Ë’¥³’¥Ô’¡¼
  		var tmp = this.baseObj.clone(true);
 
 		//doc’¤Î’¥Ç’¡¼’¥¿’¤ò’Î®’¤·’¹þ’¤à
-		$(tmp).attr('id',doc._docId);
- 		$('.title',tmp).text(doc.title);
- 		$('._createdAt',tmp).text(doc._createdAt);
-		$('._createdBy',tmp).text(doc._createdBy);
-		
+		$(tmp).attr('id', doc._docId);
+ 		$('.title', tmp).text(doc.title);
+ 		$('._createdAt', tmp).text(doc._createdAt);
+		$('._createdBy', tmp).text(doc._createdBy);
+
 		//detail’¤Î’Ãæ’¤Ë’¡¢doc.detail’¤ò’Î®’¤·’¹þ’¤à’¡£
 		bbs.displayMultiLineText($('p.detail', tmp), doc.detail);
 
 		//doc.response’¤Ë’Æþ’¤Ã’¤Æ’¤ëdocId’¤Î’ÇÛ’Îó’¤ò’¼è’ÆÀ’¡£
 		var resArray = JSON.parse(doc.response);
-		
-		if(resArray){//resArray’¤¬’Ãæ’¿È’¤ò’»ý’¤Ã’¤Æ’¤¤’¤¿’¤é
-			for(var j=0; j<resArray.length; j++){
- 				je.GET('res',resArray[j], function(res){
+
+		if (resArray) {//resArray’¤¬’Ãæ’¿È’¤ò’»ý’¤Ã’¤Æ’¤¤’¤¿’¤é
+			for (var j = 0; j < resArray.length; j++) {
+ 				je.GET('res', resArray[j], function(res) {
   					var resObj = bbs.restmpObj(res);
- 					$('div.topicDetail > p.detail',tmp).append(resObj);
+ 					$('div.topicDetail > p.detail', tmp).append(resObj);
  				});
 			}
 		}
 		tmp.insertAfter('.topic:last');
 	},
 
-	template : '<p class="input-res">'
-		          +'<textarea class="input-res-text" rows="4"></textarea>'
-	  	          +'<p class="input-res-button">'
-    	             +'<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="clear" />'
-    	             +'<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="submit" />'
-                  +'</p>'
-	  	      +'</p>'
+	template: '<p class="input-res">'
+		          + '<textarea class="input-res-text" rows="4"></textarea>'
+	  	          + '<p class="input-res-button">'
+    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="clear" />'
+    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="submit" />'
+                  + '</p>'
+	  	      + '</p>'
 	,
 
-	buildResInput : function(target){
+	buildResInput: function(target) {
 		//response’¤ò’É½’¼¨’¤¹’¤ë’ÎÎ’°è’¤ò’³Î’ÊÝ
 		var tmp = $(bbs.template);
 
 		//clear’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
-		$('input[value="clear"]',tmp).click(function(){
-			$('textarea',tmp).val('');
+		$('input[value="clear"]', tmp).click(function() {
+			$('textarea', tmp).val('');
 		});
-		
+
 		//submit’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
-		$('input[value="submit"]',tmp).click(function(){
+		$('input[value="submit"]', tmp).click(function() {
 			//’¥ì’¥¹’Ê¸’¤ò’¼è’ÆÀ
-			var inputResText = $('textarea',tmp).val();
-			
+			var inputResText = $('textarea', tmp).val();
+
 			//’¶õ’¤À’¤Ã’¤¿’¤é’²¿’¤â’¤·’¤Ê’¤¤’¡£
-			if(inputResText == ''){
+			if (inputResText == '') {
 				return false;
 			}
 
@@ -201,11 +207,11 @@ var bbs = {
 
 			//’¥ì’¥¹’¤È’¤·’¤Æ’ÅÐ’Ï¿’¤¹’¤ë’¥Ç’¡¼’¥¿
 			var data = {
-				resDetail : inputResText,
-				to : _docId 
+				resDetail: inputResText,
+				to: _docId
 			};
-			
-			je.POST('res', data, function(postResponse){
+
+			je.POST('res', data, function(postResponse) {
 				// doc ’¤Ë ’ÅÐ’Ï¿’¤·’¤¿ res ’¤Î docId ’¤ò’²Ã’¤¨’¤ë’¡£
 				bbs.addResIdToDoc(_docId, postResponse._docId);
 				bbs.showResponse(_docId, postResponse);
@@ -214,41 +220,41 @@ var bbs = {
 		return tmp;
 	},
 
-	addResIdToDoc : function(docId, resId){
-		var callback = function(data){
+	addResIdToDoc: function(docId, resId) {
+		var callback = function(data) {
 			var responseArray = JSON.parse(data.response);
 			responseArray.push(resId);
-			
-			je.PUT(bbs.docType, docId, {response :JSON.stringify(responseArray)}, function(data){
+
+			je.PUT(bbs.docType, docId, {response: JSON.stringify(responseArray)}, function(data) {
 
 		    });
-		};  
+		};
 		je.GET(bbs.docType, docId, callback);
 	},
-	
-	showResponse : function(_docId, res){
-		$('#'+_docId+' .input-res').remove();
-		$('#'+_docId+' .input-res-button')
+
+	showResponse: function(_docId, res) {
+		$('#' + _docId + ' .input-res').remove();
+		$('#' + _docId + ' .input-res-button')
 			.html(
-				'<input class="input-res-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="response" />'+
+				'<input class="input-res-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="response" />' +
 				'<input class="input-res-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />'
 		);
 		var resObj = bbs.restmpObj(res);
-		$('div.topicDetail > p.detail', '#'+_docId).append(resObj);
+		$('div.topicDetail > p.detail', '#' + _docId).append(resObj);
 	}
 };
 
-$(function(){
+$(function() {
 	  //Accordion
-	  $("#accordion").accordion({
-		  header : "h3",
+	  $('#accordion').accordion({
+		  header: 'h3',
 // 		  active : 0,
- 		  active : false,
-		  collapsible : true,
-		  autoHeight : false
+ 		  active: false,
+		  collapsible: true,
+		  autoHeight: false
 	  });
-	  
-	  bbs.init();	
+
+	  bbs.init();
 	  bbs.getTopic();
 });
 
