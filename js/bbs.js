@@ -3,6 +3,23 @@
 var bbs = {
 	baseObj: null,
 	docType: 'bbs',
+
+	restmp: '<div class="res ui-corner-all">' +
+		       '<span class="detail"></span>' +
+		       '<span class="_createdAt"></span>' +
+		       '<span class="_createdBy"></span>' +
+		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
+		     '</div>',
+
+	template: '<p class="input-res">'
+		          + '<textarea class="input-res-text" rows="4"></textarea>'
+	  	          + '<p class="input-res-button">'
+    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="clear" />'
+    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="submit" />'
+                  + '</p>'
+	  	      + '</p>'
+	,
+
 	init: function() {
 		var self = this;
 		$('.topic .input-res-button[value=response]').live('click', function() {
@@ -119,13 +136,6 @@ var bbs = {
 		return arr;
 	},
 
-	restmp: '<div class="res ui-corner-all">' +
-		       '<span class="detail"></span>' +
-		       '<span class="_createdAt"></span>' +
-		       '<span class="_createdBy"></span>' +
-		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
-		     '</div>',
-
 	restmpObj: function(responseDoc) {
 		var resObj = $(bbs.restmp);
 		resObj.attr('id', responseDoc._docId);
@@ -173,15 +183,6 @@ var bbs = {
 		}
 		tmp.insertAfter('.topic:last');
 	},
-
-	template: '<p class="input-res">'
-		          + '<textarea class="input-res-text" rows="4"></textarea>'
-	  	          + '<p class="input-res-button">'
-    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="clear" />'
-    	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="submit" />'
-                  + '</p>'
-	  	      + '</p>'
-	,
 
 	buildResInput: function(target) {
 		//response’¤ò’É½’¼¨’¤¹’¤ë’ÎÎ’°è’¤ò’³Î’ÊÝ
