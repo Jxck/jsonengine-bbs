@@ -13,14 +13,20 @@ var bbs = {
 
 	input_restmp: null,
 
+	clone_input_restmp: function() {
+		// input_restmp ’¤Ë’¥ì’¥¹’Æþ’ÎÏ’Íó’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’½é’´ü’²½’½è’Íý
+		// $tmp ’¤Ï’°ì’»þ’ÊÑ’¿ô
+		_tmp = $('#input-restmp');
+		bbs.input_restmp = _tmp.clone().removeAttr('id');
+		_tmp.remove();
+	},
+
 	init: function() {
 		var self = this;
 
-		$tmp = $('#input-restmp');
-		log($tmp);
-		bbs.input_restmp = $tmp.clone().removeAttr('id');
-		$tmp.remove();
-			
+		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
+		bbs.clone_input_restmp();
+
 		$('.topic .input-res-button[value=response]').live('click', function() {
 			var tmp = self.buildResInput();
 			tmp.insertAfter($(this).parent());
