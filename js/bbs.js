@@ -11,7 +11,7 @@ var bbs = {
 		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
 		     '</div>',
 
-	template: '<p class="input-res">'
+	input_restemp: '<p class="input-res">'
 		          + '<textarea class="input-res-text" rows="4"></textarea>'
 	  	          + '<p class="input-res-button">'
     	             + '<input class="ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="clear" />'
@@ -186,7 +186,7 @@ var bbs = {
 
 	buildResInput: function(target) {
 		//response’¤ò’É½’¼¨’¤¹’¤ë’ÎÎ’°è’¤ò’³Î’ÊÝ
-		var tmp = $(bbs.template);
+		var tmp = $(bbs.input_restemp);
 
 		//clear’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
 		$('input[value="clear"]', tmp).click(function() {
