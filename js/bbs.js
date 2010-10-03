@@ -28,8 +28,8 @@ var bbs = {
 		bbs.input_restmp = 	bbs.clone_input_restmp();
 
 		$('.topic .input-res-button[value=response]').live('click', function() {
-			var tmp = self.buildResInput();
-			tmp.insertAfter($(this).parent());
+			var resInput = self.buildResInput();
+			resInput.insertAfter($(this).parent());
 			$(this).parent().remove();
 		});
 
@@ -64,7 +64,7 @@ var bbs = {
 
 				je.DELETE(bbs.docType, resId, function() {});
 				$('#' + resId).remove();
-			}
+			};
 			je.GET(bbs.docType, topicId, callback);
 		});
 
@@ -239,6 +239,8 @@ var bbs = {
 	},
 
 	showResponse: function(_docId, res) {
+		log(_docId);
+		log(res);
 		$('#' + _docId + ' .input-res').remove();
 		$('#' + _docId + ' .input-res-button')
 			.html(
