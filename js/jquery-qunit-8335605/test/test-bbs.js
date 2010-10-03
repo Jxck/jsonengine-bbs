@@ -4,18 +4,6 @@ test('test of test', function(){
 //	ok(bbs.buildTopic);
 });
 
-// test('clone base object',function(){
-// 	equal(bbs.baseObj,null);
-// 	bbs.init();
-// 	notEqual(bbs.baseObj,null);
-// });
-
-// test('build topic from json',function(){
-
-// 	bbs.buildTopic(json);
-// });
-
-
 
 test('multiLineText2Html', function(){
 	ok(bbs.	multiLineText2Html, 'exist');
