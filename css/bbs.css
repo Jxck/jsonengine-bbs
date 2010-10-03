@@ -1,0 +1,103 @@
+/*demo page css*/
+body{
+	font: 65% "Trebuchet MS", sans-serif;
+	margin: 4%;
+}
+
+textarea {
+/* 	display:block; */
+	padding:0.4em;
+}
+
+input[type=text]{
+	padding:0.4em;
+}
+
+hr {
+	clear:both;
+	visibility:hidden;
+}
+
+.headers {
+	margin-top: 2em;
+}
+
+.topic {
+	margin-bottom: 1%;
+	font-size: 130%;
+}
+
+.topic h3{
+	font-size: 135%;
+}
+
+.topic ._createdAt {
+	font-size:60%;
+	position:absolute;
+	right:1%;
+	bottom:2.2em;
+}
+
+.topic ._createdBy {
+	font-size:60%;
+	position:absolute;
+	right:1%;
+	bottom:0.5em;
+}
+
+.detail div{
+	margin-top:2%;
+}
+
+.detail ._createdAt {
+	font-size:60%;
+	position:absolute;
+	right:1%;
+	top:0.5em;
+}
+
+.detail ._createdBy {
+	font-size:60%;
+	position:absolute;
+	right:1%;
+	top:2.2em;
+}
+
+.res {
+	border:1px solid #CCCCCC;
+	padding:1%;
+	min-height:3em;
+	position:relative;
+}
+
+.res input[type=button]{
+	font-size: 70%;
+	padding: 0;
+	height: 20px;
+	right: 0.8%;
+	bottom: 0.9em;
+	position:absolute;	
+ }
+
+.input-res textarea{
+	width:99%;
+}
+
+
+#new-topic {
+	padding: 1% 4% 0 4%;
+	border: 1px solid #ccc;
+	font-size: 130%;
+	clear:both;
+}
+
+#new-topic input[type=text]{
+	width: 99%;
+	margin-bottom: 2%;
+}
+
+#new-topic textarea {
+	width: 99%;
+	margin-bottom: 2%;
+}
+
