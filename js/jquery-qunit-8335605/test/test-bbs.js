@@ -1,4 +1,4 @@
-test('test of test', function(){
+test('test of test', function() {
 	ok(bbs);
 	ok(bbs.init);
 	ok(bbs.clone_input_restmp);
