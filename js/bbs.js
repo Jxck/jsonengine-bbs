@@ -4,14 +4,23 @@ var bbs = {
 	baseObj: null,
 	docType: 'bbs',
 
-	restmp: '<div class="res ui-corner-all">' +
-		       '<span class="detail"></span>' +
-		       '<span class="_createdAt"></span>' +
-		       '<span class="_createdBy"></span>' +
-		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
-		     '</div>',
+	restmp: null,// '<div class="res ui-corner-all">' +
+// 		       '<span class="detail"></span>' +
+// 		       '<span class="_createdAt"></span>' +
+// 		       '<span class="_createdBy"></span>' +
+// 		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
+// 		     '</div>',
+
 
 	input_restmp: null,
+
+	clone_restmp: function() {
+		// restmp ’¤Ë’¥ì’¥¹’É½’¼¨’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’½é’´ü’²½’½è’Íý
+		var _tmp = $('#restmp');
+		var _return = _tmp.clone().removeAttr('id');
+		_tmp.remove();
+		return _return;
+	},
 
 	clone_input_restmp: function() {
 		// input_restmp ’¤Ë’¥ì’¥¹’Æþ’ÎÏ’Íó’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’½é’´ü’²½’½è’Íý
@@ -23,6 +32,9 @@ var bbs = {
 
 	init: function() {
 		var self = this;
+
+		// restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
+		bbs.restmp = bbs.clone_restmp();
 
 		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
 		bbs.input_restmp = 	bbs.clone_input_restmp();
@@ -142,7 +154,7 @@ var bbs = {
 	},
 
 	restmpObj: function(responseDoc) {
-		var resObj = $(bbs.restmp);
+		var resObj = bbs.restmp.clone();
 		resObj.attr('id', responseDoc._docId);
 		bbs.displayMultiLineText($('.detail', resObj), responseDoc.resDetail);
 		$('._createdAt', resObj).text(responseDoc._createdAt);
