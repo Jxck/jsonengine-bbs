@@ -1,7 +1,7 @@
 //log = function(a){ 	if(console.log) console.log(a);};
 //je = mock;
 var bbs = {
-	baseObj: null,
+	topictmp: null,
 	docType: 'bbs',
 
 	restmp: null,
@@ -12,23 +12,24 @@ var bbs = {
 	 * ’¥³’¥Ô’¡¼’¤·’¤¿’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤«’¤é’¤Ï id ’¤ò’¾Ã’µî’¤·,
 	 * ’¥³’¥Ô’¡¼’¸µ’¤Î html ’¤«’¤é’¤Ï’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’ºï’½ü’¤¹’¤ë.
 	 * @param {string} id ’¥³’¥Ô’¡¼’¤·’¤¿’¤¤’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤Î id. ex '#template'
+	 * @param {boolean} del ’¥³’¥Ô’¡¼’¤·’¤¿’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¾Ã’¤¹’¤«, false ’¤Ê’¤é’¾Ã’¤µ’¤º hide()
 	 * @return {object} ’¥³’¥Ô’¡¼’ÍÑ’¤Î id ’¤ò’¾Ã’µî’¤·’¤¿ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
 	 */
-	clone_template: function(id) {
-		var _tmp = $(id);
-		var template = _tmp.clone().removeAttr('id');
-		_tmp.remove();
-		return template;
+	clone_template: function(id, del) {
+		var _$tmp = $(id);
+		var $template = _$tmp.clone(true).removeAttr('id');
+		del ? _$tmp.remove() : _$tmp.hide();
+		return $template;
 	},
 
 	init: function() {
 		var self = this;
 
 		// restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
-		bbs.restmp = bbs.clone_template('#restmp');
+		bbs.restmp = bbs.clone_template('#restmp', true);
 
 		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
-		bbs.input_restmp = 	bbs.clone_template('#input-restmp');
+		bbs.input_restmp = 	bbs.clone_template('#input-restmp', true);
 
 		$('.topic .input-res-button[value=response]').live('click', function() {
 			var resInput = self.buildResInput();
@@ -71,14 +72,10 @@ var bbs = {
 			je.GET(bbs.docType, topicId, callback);
 		});
 
-		this.baseView('#template');
-		this.buindSubmit();
-	},
+		// topictmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
+		bbs.topictmp = bbs.clone_template('#template', false);
 
-	baseView: function(id) {
-		var $template = $(id);
-		this.baseObj = $template.clone(true).removeAttr('id');
-		$template.hide();
+		this.buindSubmit();
 	},
 
 	buindSubmit: function() {
@@ -167,7 +164,7 @@ var bbs = {
 	buildTopic: function(doc) {
 		//’¼õ’¤±’¼è’¤Ã’¤¿doc’¤ò’¸µ’¤ËTopic’¤ò’ÁÈ’¤ß’Î©’¤Æ’É½’¼¨’¤¹’¤ë’¡£
 		//Topic’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¤’¥Ù’¥ó’¥È’¤È’°ì’½ï’¤Ë’¥³’¥Ô’¡¼
- 		var tmp = this.baseObj.clone(true);
+ 		var tmp = bbs.topictmp.clone(true);
 
 		//doc’¤Î’¥Ç’¡¼’¥¿’¤ò’Î®’¤·’¹þ’¤à
 		$(tmp).attr('id', doc._docId);
