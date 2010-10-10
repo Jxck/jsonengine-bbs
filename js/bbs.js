@@ -4,40 +4,31 @@ var bbs = {
 	baseObj: null,
 	docType: 'bbs',
 
-	restmp: null,// '<div class="res ui-corner-all">' +
-// 		       '<span class="detail"></span>' +
-// 		       '<span class="_createdAt"></span>' +
-// 		       '<span class="_createdBy"></span>' +
-// 		       '<input class="delete-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />' +
-// 		     '</div>',
-
-
+	restmp: null,
 	input_restmp: null,
 
-	clone_restmp: function() {
-		// restmp ’¤Ë’¥ì’¥¹’É½’¼¨’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’½é’´ü’²½’½è’Íý
-		var _tmp = $('#restmp');
-		var _return = _tmp.clone().removeAttr('id');
+	/**
+	 * ’»Ø’Äê’¤·’¤¿ id ’¤ò’¸µ’¤Ë, html ’¤«’¤é’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¤’¥Ù’¥ó’¥È’¤´’¤È’¥³’¥Ô’¡¼’¤¹’¤ë
+	 * ’¥³’¥Ô’¡¼’¤·’¤¿’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤«’¤é’¤Ï id ’¤ò’¾Ã’µî’¤·,
+	 * ’¥³’¥Ô’¡¼’¸µ’¤Î html ’¤«’¤é’¤Ï’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’ºï’½ü’¤¹’¤ë.
+	 * @param {string} id ’¥³’¥Ô’¡¼’¤·’¤¿’¤¤’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤Î id. ex '#template'
+	 * @return {object} ’¥³’¥Ô’¡¼’ÍÑ’¤Î id ’¤ò’¾Ã’µî’¤·’¤¿ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 */
+	clone_template: function(id) {
+		var _tmp = $(id);
+		var template = _tmp.clone().removeAttr('id');
 		_tmp.remove();
-		return _return;
-	},
-
-	clone_input_restmp: function() {
-		// input_restmp ’¤Ë’¥ì’¥¹’Æþ’ÎÏ’Íó’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’½é’´ü’²½’½è’Íý
-		var _tmp = $('#input-restmp');
-		var _return = _tmp.clone().removeAttr('id');
-		_tmp.remove();
-		return _return;
+		return template;
 	},
 
 	init: function() {
 		var self = this;
 
 		// restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
-		bbs.restmp = bbs.clone_restmp();
+		bbs.restmp = bbs.clone_template('#restmp');
 
 		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
-		bbs.input_restmp = 	bbs.clone_input_restmp();
+		bbs.input_restmp = 	bbs.clone_template('#input-restmp');
 
 		$('.topic .input-res-button[value=response]').live('click', function() {
 			var resInput = self.buildResInput();
