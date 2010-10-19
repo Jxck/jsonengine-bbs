@@ -36,17 +36,17 @@ var bbs = {
 		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
 		bbs.input_restmp = 	bbs.clone_template('#input-restmp', true);
 
-		$('.topic input[value=clear],.topic input[value=submit]').hide();
+		$('.topic .clear,.topic .submit').hide();
 
 		// response ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
-		$('.topic input[value=response]').live('click', function() {
+		$('.topic .response').live('click', function() {
 			var $topic = $(this).parents('div.topic');
 			var resInput = bbs.buildResInput();
 			resInput.insertAfter($topic.find('p.detail'));
-			$topic.find('input').toggle();
+			$topic.find('.input-res-button input').toggle();
 		});
 
-		$('.topic input[value=delete]').live('click', function() {
+		$('.topic .delete').live('click', function() {
 			var _docId = $(this).parents('div.topic').attr('id');
 			if (confirm('really?')) {
 				var callback = function(data) {
@@ -234,7 +234,7 @@ var bbs = {
 
 	buildResInput: function(target) {
 		//response’¤ò’É½’¼¨’¤¹’¤ë’ÎÎ’°è’¤ò’³Î’ÊÝ
-		var tmp = bbs.input_restmp;
+		var tmp = bbs.input_restmp.clone(true);
 		return tmp;
 	},
 
@@ -251,13 +251,13 @@ var bbs = {
 	},
 
 	showResponse: function(_docId, res) {
-// 		$('#' + _docId).find('.input-res-field').remove();
+ 		var $topic = $('#' + _docId);
 
-// 		var $topic = $(this).parents('div.topic');
-// 		$topic.find('input').toggle();
+		$topic.find('.input-res-field').remove();
+		$topic.find('.input-res-button input').toggle();
 
-// 		var resObj = bbs.restmpObj(res);
-// 		$('div.topicDetail > p.detail', '#' + _docId).append(resObj);
+ 		var resObj = bbs.restmpObj(res);
+		$topic.find('p.detail').append(resObj);
 	}
 };
 
