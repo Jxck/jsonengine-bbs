@@ -22,8 +22,13 @@ var bbs = {
 		return $template;
 	},
 
+	baseView: function(id) {
+		var $template = $(id);
+		this.baseObj = $template.clone(true).removeAttr('id');
+		$template.hide();
+	},
+
 	init: function() {
-		var self = this;
 
 		// restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
 		bbs.restmp = bbs.clone_template('#restmp', true);
@@ -31,13 +36,17 @@ var bbs = {
 		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
 		bbs.input_restmp = 	bbs.clone_template('#input-restmp', true);
 
-		$('.topic .input-res-button[value=response]').live('click', function() {
-			var resInput = self.buildResInput();
-			resInput.insertAfter($(this).parent());
-			$(this).parent().remove();
+		$('.topic input[value=clear],.topic input[value=submit]').hide();
+
+		// response ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
+		$('.topic input[value=response]').live('click', function() {
+			var $topic = $(this).parents('div.topic');
+			var resInput = bbs.buildResInput();
+			resInput.insertAfter($topic.find('p.detail'));
+			$topic.find('input').toggle();
 		});
 
-		$('.topic .input-res-button[value=delete]').live('click', function() {
+		$('.topic input[value=delete]').live('click', function() {
 			var _docId = $(this).parents('div.topic').attr('id');
 			if (confirm('really?')) {
 				var callback = function(data) {
@@ -51,6 +60,41 @@ var bbs = {
 				je.GET(bbs.docType, _docId, callback);
 			}
 		});
+
+		//clear’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
+		$('.topic input[value="clear"]').live('click',function() {
+			var $topic = $(this).parents('div.topic');
+			$topic.find('textarea').val('');
+		});
+
+		//submit’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
+		$('.topic input[value="submit"]').live('click',function() {
+
+			//’¥ì’¥¹’Ê¸’¤ò’¼è’ÆÀ
+			var $topic = $(this).parents('div.topic');
+			var inputResText = $topic.find('textarea').val();
+			
+			//’¶õ’¤À’¤Ã’¤¿’¤é’²¿’¤â’¤·’¤Ê’¤¤’¡£
+			if (inputResText == '') {
+				return false;
+			}
+
+			//’¥ì’¥¹’¤¬’Æþ’ÎÏ’¤µ’¤ì’¤¿Topic’¤Îid’¤ò’¼è’ÆÀ
+			var _docId = $topic.attr('id');
+
+			//’¥ì’¥¹’¤È’¤·’¤Æ’ÅÐ’Ï¿’¤¹’¤ë’¥Ç’¡¼’¥¿
+			var data = {
+				resDetail: inputResText,
+				to: _docId
+			};
+
+			je.POST('res', data, function(postResponse) {
+				// doc ’¤Ë ’ÅÐ’Ï¿’¤·’¤¿ res ’¤Î docId ’¤ò’²Ã’¤¨’¤ë’¡£
+				bbs.addResIdToDoc(_docId, postResponse._docId);
+				bbs.showResponse(_docId, postResponse);
+			});
+		});
+
 
 		$('.delete-button').live('click', function() {
 			var resId = $(this).parents('.res').attr('id');
@@ -79,7 +123,6 @@ var bbs = {
 	},
 
 	buindSubmit: function() {
-		var self = this;
 		//submit’¥Ü’¥¿’¥ó’¤Î’¥¤’¥Ù’¥ó’¥È’½è’Íý
 		$('#input-new-submit').click(function() {
 			var title = $('#new-topic input[type=text]').val();
@@ -87,7 +130,7 @@ var bbs = {
 			if (title === '' || detail === '') {
 				return false;
 			}
-			self.postTopic(title, detail, '[]');
+			bbs.postTopic(title, detail, '[]');
 			$('#input-new-clear').click();
 		});
 
@@ -192,37 +235,6 @@ var bbs = {
 	buildResInput: function(target) {
 		//response’¤ò’É½’¼¨’¤¹’¤ë’ÎÎ’°è’¤ò’³Î’ÊÝ
 		var tmp = bbs.input_restmp;
-
-		//clear’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
-		$('input[value="clear"]', tmp).click(function() {
-			$('textarea', tmp).val('');
-		});
-
-		//submit’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
-		$('input[value="submit"]', tmp).click(function() {
-			//’¥ì’¥¹’Ê¸’¤ò’¼è’ÆÀ
-			var inputResText = $('textarea', tmp).val();
-
-			//’¶õ’¤À’¤Ã’¤¿’¤é’²¿’¤â’¤·’¤Ê’¤¤’¡£
-			if (inputResText == '') {
-				return false;
-			}
-
-			//’¥ì’¥¹’¤¬’Æþ’ÎÏ’¤µ’¤ì’¤¿Topic’¤Îid’¤ò’¼è’ÆÀ
-			var _docId = $(this).parents('div.topic').attr('id');
-
-			//’¥ì’¥¹’¤È’¤·’¤Æ’ÅÐ’Ï¿’¤¹’¤ë’¥Ç’¡¼’¥¿
-			var data = {
-				resDetail: inputResText,
-				to: _docId
-			};
-
-			je.POST('res', data, function(postResponse) {
-				// doc ’¤Ë ’ÅÐ’Ï¿’¤·’¤¿ res ’¤Î docId ’¤ò’²Ã’¤¨’¤ë’¡£
-				bbs.addResIdToDoc(_docId, postResponse._docId);
-				bbs.showResponse(_docId, postResponse);
-			});
-		});
 		return tmp;
 	},
 
@@ -239,16 +251,13 @@ var bbs = {
 	},
 
 	showResponse: function(_docId, res) {
-		log(_docId);
-		log(res);
-		$('#' + _docId + ' .input-res').remove();
-		$('#' + _docId + ' .input-res-button')
-			.html(
-				'<input class="input-res-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="response" />' +
-				'<input class="input-res-button ui-button ui-state-hover ui-corner-all ui-button-text-only" type="button" value="delete" />'
-		);
-		var resObj = bbs.restmpObj(res);
-		$('div.topicDetail > p.detail', '#' + _docId).append(resObj);
+// 		$('#' + _docId).find('.input-res-field').remove();
+
+// 		var $topic = $(this).parents('div.topic');
+// 		$topic.find('input').toggle();
+
+// 		var resObj = bbs.restmpObj(res);
+// 		$('div.topicDetail > p.detail', '#' + _docId).append(resObj);
 	}
 };
 
@@ -256,14 +265,14 @@ $(function() {
 	  //Accordion
 	  $('#accordion').accordion({
 		  header: 'h3',
-// 		  active : 0,
- 		  active: false,
+ 		  active : 0,
+// 		  active: false,
 		  collapsible: true,
 		  autoHeight: false
 	  });
 
-	  bbs.init();
-	  bbs.getTopic();
+ 	  bbs.init();
+ 	  bbs.getTopic();
 });
 
 
