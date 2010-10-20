@@ -96,7 +96,7 @@ var bbs = {
 		});
 
 
-		$('.delete-button').live('click', function() {
+		$('.delete-res').live('click', function() {
 			var resId = $(this).parents('.res').attr('id');
 			var topicId = $(this).parents().parents('.topic').attr('id');
 
@@ -265,8 +265,8 @@ $(function() {
 	  //Accordion
 	  $('#accordion').accordion({
 		  header: 'h3',
- 		  active : 0,
-// 		  active: false,
+// 		  active : 0,
+ 		  active: false,
 		  collapsible: true,
 		  autoHeight: false
 	  });
