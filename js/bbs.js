@@ -22,12 +22,6 @@ var bbs = {
 		return $template;
 	},
 
-	baseView: function(id) {
-		var $template = $(id);
-		this.baseObj = $template.clone(true).removeAttr('id');
-		$template.hide();
-	},
-
 	init: function() {
 
 		// restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
@@ -119,7 +113,7 @@ var bbs = {
 		// topictmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
 		bbs.topictmp = bbs.clone_template('#template', false);
 
-		this.buindSubmit();
+		bbs.buindSubmit();
 	},
 
 	buindSubmit: function() {
@@ -193,16 +187,34 @@ var bbs = {
 		return resObj;
 	},
 
-	displayMultiLineText: function(area, multiLineText) {
+	/**
+	 * 
+	 * @param {string} $area ’É½’¼¨’¤·’¤¿’¤¤ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 * @param {boolean} multiLineText ’É½’¼¨’¤·’¤¿’¤¤’¥Æ’¥­’¥¹’¥È
+	 * @return {object} ’¥³’¥Ô’¡¼’ÍÑ’¤Î id ’¤ò’¾Ã’µî’¤·’¤¿ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 */
+	displayMultiLineText: function($area, multiLineText) {
 		// insert mutiline text to DOM area
 		// each texts are wrapped with <span></span>
 		// and add <br> at end of each line
 		var lineArray = multiLineText.split('\n');
 		for (var i = 0; i < lineArray.length; i++) {
-			area.append($('<span>').text(lineArray[i]));
+			$area.append($('<span>').text(lineArray[i]));
 		}
-		$('span', area).after('<br>');
+		$('span', $area).after('<br>');
 	},
+
+	multiLineTextToDom: function(multiLineText) {
+		var lineArray = multiLineText.split('\n');
+		var $p = $('<p>');
+		for (var i = 0; i < lineArray.length; i++) {
+			var $span = $('<span>').text(lineArray[i]);
+			$p.append($span);
+		};
+		$('span', $p).after('<br>');
+		return $p;
+	},
+
 
 	buildTopic: function(doc) {
 		//’¼õ’¤±’¼è’¤Ã’¤¿doc’¤ò’¸µ’¤ËTopic’¤ò’ÁÈ’¤ß’Î©’¤Æ’É½’¼¨’¤¹’¤ë’¡£

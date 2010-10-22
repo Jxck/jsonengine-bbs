@@ -18,7 +18,24 @@ var je = {
 		});
 	},
 
-
+	/**
+	 * (docType, docId, callback) 
+	 * (docType, callback)
+	 * (param)
+	 * 
+	 * param = {
+	 *   docType : 'docType',
+	 *   docId : 'docId',
+	 *   callback : function(){},
+	 *   beforeSend : function(){},
+	 *   sucess : function(){},
+	 *   error : function(){},
+	 *   complete : function(){}
+	 * }
+	 * @param {string} id コピーしたいテンプレートの id. ex '#template'
+	 * @param {boolean} del コピーしたテンプレートを消すか, false なら消さず hide()
+	 * @return {object} コピー用の id を消去した jQuery オブジェクト
+	 */
 	GET: function(docType, docId, callback) {
 		var url = je.baseURI + docType;
 		if (arguments.length === 3) {
@@ -26,6 +43,7 @@ var je = {
 		}else if (arguments.length === 2) {
 			callback = docId;
 		}
+
 		$.ajax({
 			type: 'GET',
 			url: url,
