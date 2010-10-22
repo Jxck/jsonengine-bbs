@@ -1,3 +1,12 @@
+// Copyright 
+
+/**
+ * @fileoverview 
+ * require jsonengine
+ * @author block.rxckin.beats@gmail.com (id:Jxck)
+ */
+
+
 //log = function(a){ 	if(console.log) console.log(a);};
 //je = mock;
 var bbs = {
@@ -179,31 +188,34 @@ var bbs = {
 	},
 
 	restmpObj: function(responseDoc) {
-		var resObj = bbs.restmp.clone();
-		resObj.attr('id', responseDoc._docId);
-		bbs.displayMultiLineText($('.detail', resObj), responseDoc.resDetail);
-		$('._createdAt', resObj).text(responseDoc._createdAt);
-		$('._createdBy', resObj).text(responseDoc._createdBy);
-		return resObj;
+		var $resObj = bbs.restmp.clone();
+		$resObj.attr('id', responseDoc._docId);
+		var $p = bbs.multiLineTextToDom(responseDoc.resDetail);
+		$('.detail', $resObj).append($p);
+		$('._createdAt', $resObj).text(responseDoc._createdAt);
+		$('._createdBy', $resObj).text(responseDoc._createdBy);
+		return $resObj;
 	},
+
+// 	displayMultiLineText: function($area, multiLineText) {
+// 		// insert mutiline text to DOM area
+// 		// each texts are wrapped with <span></span>
+// 		// and add <br> at end of each line
+// 		var lineArray = multiLineText.split('\n');
+// 		for (var i = 0; i < lineArray.length; i++) {
+// 			$area.append($('<span>').text(lineArray[i]));
+// 		}
+// 		$('span', $area).after('<br>');
+// 	},
+
 
 	/**
-	 * 
-	 * @param {string} $area ’É½’¼¨’¤·’¤¿’¤¤ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
-	 * @param {boolean} multiLineText ’É½’¼¨’¤·’¤¿’¤¤’¥Æ’¥­’¥¹’¥È
-	 * @return {object} ’¥³’¥Ô’¡¼’ÍÑ’¤Î id ’¤ò’¾Ã’µî’¤·’¤¿ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 * ’¼õ’¤±’¼è’¤Ã’¤¿’¥Þ’¥ë’¥Á’¥é’¥¤’¥ó’¥Æ’¥­’¥¹’¥È’¤ò
+	 * <p><span>text</span><br><span>text</span></p>
+	 * ’¤Î’·Á’¤Ë’¥Þ’¡¼’¥¯’¥¢’¥Ã’¥×’¤·’¤¿ jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È’¤ò’ÊÖ’¤¹’¡£
+	 * @param {string} multiLineText ’É½’¼¨’¤¹’¤ë’Ê£’¿ô’¹Ô’¥Æ’¥­’¥¹’¥È
+	 * @return {object} ’¥Þ’¡¼’¥¯’¥¢’¥Ã’¥×’¤·’¤¿ jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
 	 */
-	displayMultiLineText: function($area, multiLineText) {
-		// insert mutiline text to DOM area
-		// each texts are wrapped with <span></span>
-		// and add <br> at end of each line
-		var lineArray = multiLineText.split('\n');
-		for (var i = 0; i < lineArray.length; i++) {
-			$area.append($('<span>').text(lineArray[i]));
-		}
-		$('span', $area).after('<br>');
-	},
-
 	multiLineTextToDom: function(multiLineText) {
 		var lineArray = multiLineText.split('\n');
 		var $p = $('<p>');
@@ -228,7 +240,8 @@ var bbs = {
 		$('._createdBy', tmp).text(doc._createdBy);
 
 		//detail’¤Î’Ãæ’¤Ë’¡¢doc.detail’¤ò’Î®’¤·’¹þ’¤à’¡£
-		bbs.displayMultiLineText($('p.detail', tmp), doc.detail);
+		var $p = bbs.multiLineTextToDom(doc.detail);
+		$('p.detail', tmp).append($p);
 
 		//doc.response’¤Ë’Æþ’¤Ã’¤Æ’¤ëdocId’¤Î’ÇÛ’Îó’¤ò’¼è’ÆÀ’¡£
 		var resArray = JSON.parse(doc.response);
