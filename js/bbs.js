@@ -39,9 +39,10 @@ var bbs = {
 		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
 		bbs.input_restmp = 	bbs.clone_template('#input-restmp', true);
 
+		// topic ’Æâ’¤Î clear ’¤È submit ’¥Ü’¥¿’¥ó’¤ò’±£’¤¹
 		$('.topic .clear,.topic .submit').hide();
 
-		// response ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
+		// topic ’¤Î response ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
 		$('.topic .response').live('click', function() {
 			var $topic = $(this).parents('div.topic');
 			var resInput = bbs.buildResInput();
@@ -49,6 +50,7 @@ var bbs = {
 			$topic.find('.input-res-button input').toggle();
 		});
 
+		// topic ’¤Î delete ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
 		$('.topic .delete').live('click', function() {
 			var _docId = $(this).parents('div.topic').attr('id');
 			if (confirm('really?')) {
@@ -64,13 +66,13 @@ var bbs = {
 			}
 		});
 
-		//clear’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
+		// topic ’¤Î clear ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
 		$('.topic input[value="clear"]').live('click',function() {
 			var $topic = $(this).parents('div.topic');
 			$topic.find('textarea').val('');
 		});
 
-		//submit’¥Ü’¥¿’¥ó’¤Ë’¥¤’¥Ù’¥ó’¥È’¤ò’¥Ð’¥¤’¥ó’¥É
+		// topic ’¤Î submit ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
 		$('.topic input[value="submit"]').live('click',function() {
 
 			//’¥ì’¥¹’Ê¸’¤ò’¼è’ÆÀ
@@ -178,6 +180,13 @@ var bbs = {
 		}
 	},
 
+
+	/**
+	 * resId ’¤ò’¼õ’¤±’¼è’¤ê’¡¢’¤½’¤Î’ÃÍ’¤ò’ºï’½ü’¤·’¤¿ array ’¤ò’ÊÖ’¤¹’¡£
+	 * @param {object} arr resId ’¤Î’ÇÛ’Îó
+	 * @param {string} elem ’¾Ã’¤·’¤¿’¤¤ resId
+	 * @return {object} ’ºï’½ü’½è’Íý’¤·’¤¿’ÇÛ’Îó
+	 */
 	deleteArrayElement: function(arr, elem) {
 		for (var i = 0; i < arr.length; i++) {
 			if (arr[i] === elem) {
@@ -196,17 +205,6 @@ var bbs = {
 		$('._createdBy', $resObj).text(responseDoc._createdBy);
 		return $resObj;
 	},
-
-// 	displayMultiLineText: function($area, multiLineText) {
-// 		// insert mutiline text to DOM area
-// 		// each texts are wrapped with <span></span>
-// 		// and add <br> at end of each line
-// 		var lineArray = multiLineText.split('\n');
-// 		for (var i = 0; i < lineArray.length; i++) {
-// 			$area.append($('<span>').text(lineArray[i]));
-// 		}
-// 		$('span', $area).after('<br>');
-// 	},
 
 
 	/**

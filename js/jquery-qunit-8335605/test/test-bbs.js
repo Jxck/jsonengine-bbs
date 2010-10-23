@@ -21,3 +21,19 @@ test('multiLineTextToDom', function(){
  	same($p.html(), $expect.html(), 'build success');
 });
 
+
+test('deleteArrayElement', function(){
+	var arr = ['abc','def','ghi'];
+	var expect = ['abc','ghi'];
+	same(bbs.deleteArrayElement(arr, 'def'), expect, 'delete element');
+
+	arr = ['def'];
+	expect = [];
+	same(bbs.deleteArrayElement(arr, 'def'), expect, 'became empty');
+
+	arr = [];
+	expect = [];
+	same(bbs.deleteArrayElement(arr, 'def'), expect, 'empty is empty');
+
+});
+
