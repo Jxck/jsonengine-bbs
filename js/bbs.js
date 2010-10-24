@@ -44,12 +44,7 @@ var bbs = {
 		$('.topic .clear,.topic .submit').hide();
 
 		// topic ’¤Î response ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
-		$('.topic .response').live('click', function() {
-			var $topic = $(this).parents('div.topic');
-			var resInput = bbs.buildResInput();
-			resInput.insertAfter($topic.find('p.detail'));
-			$topic.find('.input-res-button input').toggle();
-		});
+		bbs.bindTopicResponse();
 
 		// topic ’¤Î delete ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
 		$('.topic .delete').live('click', function() {
@@ -142,6 +137,18 @@ var bbs = {
 			}
 			bbs.postTopic(title, detail, '[]');
 			$('#input-new-clear').click();
+		});
+	},
+
+	/**
+	 * ’µ­’»ö’¤Î response ’¥Ü’¥¿’¥ó’¤Ø’¤Î’¥¤’¥Ù’¥ó’¥È’ÅÐ’Ï¿
+	 */
+	bindTopicResponse: function() {
+		$('.topic .response').live('click', function() {
+			var $topic = $(this).parents('div.topic');
+			var resInput = bbs.buildResInput();
+			resInput.insertAfter($topic.find('p.detail'));
+			$topic.find('.input-res-button input').toggle();
 		});
 	},
 
