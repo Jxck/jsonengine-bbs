@@ -33,10 +33,10 @@ var bbs = {
 
 	init: function() {
 
-		// restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
+		// restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’¡£
 		bbs.restmp = bbs.clone_template('#restmp', true);
 
-		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
+		// input_restmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’¡£
 		bbs.input_restmp = 	bbs.clone_template('#input-restmp', true);
 
 		// topic ’Æâ’¤Î clear ’¤È submit ’¥Ü’¥¿’¥ó’¤ò’±£’¤¹
@@ -67,13 +67,13 @@ var bbs = {
 		});
 
 		// topic ’¤Î clear ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
-		$('.topic input[value="clear"]').live('click',function() {
+		$('.topic .clear').live('click',function() {
 			var $topic = $(this).parents('div.topic');
 			$topic.find('textarea').val('');
 		});
 
 		// topic ’¤Î submit ’¥Ü’¥¿’¥ó’¤¬’¥¯’¥ê’¥Ã’¥¯’¤µ’¤ì’¤¿’»þ’¤Î’¥¤’¥Ù’¥ó’¥È’¤ò’Àß’Äê
-		$('.topic input[value="submit"]').live('click',function() {
+		$('.topic .submit').live('click',function() {
 
 			//’¥ì’¥¹’Ê¸’¤ò’¼è’ÆÀ
 			var $topic = $(this).parents('div.topic');
@@ -96,6 +96,7 @@ var bbs = {
 			je.POST('res', data, function(postResponse) {
 				// doc ’¤Ë ’ÅÐ’Ï¿’¤·’¤¿ res ’¤Î docId ’¤ò’²Ã’¤¨’¤ë’¡£
 				bbs.addResIdToDoc(_docId, postResponse._docId);
+				// ’¥ì’¥¹’¥Ý’¥ó’¥¹’¤Î res ’¤ò’É½’¼¨’¤¹’¤ë’¡£
 				bbs.showResponse(_docId, postResponse);
 			});
 		});
@@ -121,7 +122,7 @@ var bbs = {
 			je.GET(bbs.docType, topicId, callback);
 		});
 
-		// topictmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤·’½é’´ü’²½’¤¹’¤ë’¡£
+		// topictmp ’¤Ë’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¯’¥í’¡¼’¥ó’¤¹’¤ë’¡£
 		bbs.topictmp = bbs.clone_template('#template', false);
 
 		bbs.buindSubmit();
@@ -146,8 +147,13 @@ var bbs = {
 		});
 	},
 
+	/**
+	 * ’µ­’»ö’¤Î’¥¿’¥¤’¥È’¥ë’¡¢’ËÜ’Ê¸’¡¢’ÊÖ’¿®’¤Î’ÇÛ’Îó’¤ò’¼õ’¤±’¼è’¤ê’¡¢’¥Ý’¥¹’¥È’¤¹’¤ë’¡£
+	 * @param {string} titleData 
+	 * @param {string} detailData 
+	 * @param {string} responseData 
+	 */
 	postTopic: function(titleData, detailData, responseData) {
-		//’¥¿’¥¤’¥È’¥ë’¡¢’ËÜ’Ê¸’¡¢’ÊÖ’¿®’¤ò’¼õ’¤±’¼è’¤ê’¡¢post’¤¹’¤ë’¡£
 		var data = {
 			title: titleData,
 			detail: detailData,
@@ -159,10 +165,14 @@ var bbs = {
 		je.POST(bbs.docType, data, callback);
 	},
 
+	/**
+	 * _docId ’¤ò’¼õ’¤±’¼è’¤Ã’¤¿’¤é’¡¢’¤½’¤ì’¤ò’¸µ’¤Ë’¥É’¥­’¥å’¥á’¥ó’¥È’¤ò’¼è’ÆÀ’¤¹’¤ë’¡£
+	 * ’°ú’¿ô’¤¬’¤Ê’¤«’¤Ã’¤¿’¤é’¡¢ docType ’Á´’Éô’¤ò’¼õ’¤±’¼è’¤ë’¡£
+	 * ’¼õ’¤±’¼è’¤Ã’¤¿’¥É’¥­’¥å’¥á’¥ó’¥È’¤Ï’¡¢ buildTopic ’¤Ë’ÅÏ’¤¹’¡£
+	 * @param {string} _docId docId(’Ìµ’¤¤’¾ì’¹ç’¤â’¤¢’¤ë)
+	 * @return {object} ’ºï’½ü’½è’Íý’¤·’¤¿’ÇÛ’Îó
+	 */
 	getTopic: function(_docId) {
-		//_docId’¤ò’¼õ’¤±’¼è’¤Ã’¤¿’¤é’¡¢’¤½’¤ì’¤ò’¸µ’¤Ë’¥É’¥­’¥å’¥á’¥ó’¥È’¤ò’¼è’ÆÀ’¤¹’¤ë’¡£
-		//’°ú’¿ô’¤¬’¤Ê’¤«’¤Ã’¤¿’¤é’¡¢docType’Á´’Éô’¤ò’¼õ’¤±’¼è’¤ë’¡£
-		//’¼õ’¤±’¼è’¤Ã’¤¿’¥É’¥­’¥å’¥á’¥ó’¥È’¤Ï’¡¢buildTopic’¤Ë’ÅÏ’¤¹’¡£
 		var callback = null;
 
 		if (_docId) {
@@ -170,14 +180,14 @@ var bbs = {
 				bbs.buildTopic(res);
 			};
 			je.GET(bbs.docType, _docId, callback);
-		}else {
+		} else {
 			callback = function(res) {
 				for (var i in res) {
 					bbs.buildTopic(res[i]);
 				}
 			};
 			je.GET(bbs.docType, callback);
-		}
+		};
 	},
 
 
@@ -196,8 +206,13 @@ var bbs = {
 		return arr;
 	},
 
+	/**
+	 * response ’¤Î doc ’¤ò’¼õ’¤±’¼è’¤ê’¡¢’¹½’ÃÛ’¤·’¤¿’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’ÊÖ’¤¹’¡£
+	 * @param {string} responseDoc ’¼õ’¤±’¼è’¤Ã’¤¿ doc
+	 * @return {object} ’¹½’ÃÛ’¤·’¤¿ jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 */
 	restmpObj: function(responseDoc) {
-		var $resObj = bbs.restmp.clone();
+		var $resObj = bbs.restmp.clone(true);
 		$resObj.attr('id', responseDoc._docId);
 		var $p = bbs.multiLineTextToDom(responseDoc.resDetail);
 		$('.detail', $resObj).append($p);
@@ -205,7 +220,6 @@ var bbs = {
 		$('._createdBy', $resObj).text(responseDoc._createdBy);
 		return $resObj;
 	},
-
 
 	/**
 	 * ’¼õ’¤±’¼è’¤Ã’¤¿’¥Þ’¥ë’¥Á’¥é’¥¤’¥ó’¥Æ’¥­’¥¹’¥È’¤ò
@@ -229,17 +243,17 @@ var bbs = {
 	buildTopic: function(doc) {
 		//’¼õ’¤±’¼è’¤Ã’¤¿doc’¤ò’¸µ’¤ËTopic’¤ò’ÁÈ’¤ß’Î©’¤Æ’É½’¼¨’¤¹’¤ë’¡£
 		//Topic’¤Î’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¥¤’¥Ù’¥ó’¥È’¤È’°ì’½ï’¤Ë’¥³’¥Ô’¡¼
- 		var tmp = bbs.topictmp.clone(true);
+ 		var $tmp = bbs.topictmp.clone(true);
 
 		//doc’¤Î’¥Ç’¡¼’¥¿’¤ò’Î®’¤·’¹þ’¤à
-		$(tmp).attr('id', doc._docId);
- 		$('.title', tmp).text(doc.title);
- 		$('._createdAt', tmp).text(doc._createdAt);
-		$('._createdBy', tmp).text(doc._createdBy);
+		$tmp.attr('id', doc._docId);
+ 		$('.title', $tmp).text(doc.title);
+ 		$('._createdAt', $tmp).text(doc._createdAt);
+		$('._createdBy', $tmp).text(doc._createdBy);
 
 		//detail’¤Î’Ãæ’¤Ë’¡¢doc.detail’¤ò’Î®’¤·’¹þ’¤à’¡£
 		var $p = bbs.multiLineTextToDom(doc.detail);
-		$('p.detail', tmp).append($p);
+		$('p.detail', $tmp).append($p);
 
 		//doc.response’¤Ë’Æþ’¤Ã’¤Æ’¤ëdocId’¤Î’ÇÛ’Îó’¤ò’¼è’ÆÀ’¡£
 		var resArray = JSON.parse(doc.response);
@@ -248,11 +262,11 @@ var bbs = {
 			for (var j = 0; j < resArray.length; j++) {
  				je.GET('res', resArray[j], function(res) {
   					var resObj = bbs.restmpObj(res);
- 					$('div.topicDetail > p.detail', tmp).append(resObj);
+ 					$('div.topicDetail > p.detail', $tmp).append(resObj);
  				});
 			}
 		}
-		tmp.insertAfter('.topic:last');
+		$tmp.insertAfter('.topic:last');
 	},
 
 	buildResInput: function(target) {

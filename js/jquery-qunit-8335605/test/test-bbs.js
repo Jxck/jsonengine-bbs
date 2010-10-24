@@ -37,3 +37,31 @@ test('deleteArrayElement', function(){
 
 });
 
+
+test('restmpObj', function(){
+// 	var res = {
+// 		"resDetail":"’¾Ü’ºÙ’¾Ü’ºÙ",
+// 		"to":"OTeTBos6jg7oH9jlD7ZElyoTrr5URfvO",
+// 		"_docId":"Zex8V1fenIasFsCWivttvXH5Ppq4WjK6",
+// 		"_updatedAt":1287807709880,
+// 		"_createdAt":1287807709880,
+// 		"_updatedBy":null,
+// 		"_createdBy":null
+// 	};
+
+// 	var expect = 
+
+
+// 	same(bbs.deleteArrayElement(arr, 'def'), expect, 'delete element');
+
+// 	arr = ['def'];
+// 	expect = [];
+// 	same(bbs.deleteArrayElement(arr, 'def'), expect, 'became empty');
+
+// 	arr = [];
+// 	expect = [];
+// 	same(bbs.deleteArrayElement(arr, 'def'), expect, 'empty is empty');
+
+});
+
+
