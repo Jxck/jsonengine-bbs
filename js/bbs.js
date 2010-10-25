@@ -79,7 +79,7 @@ var bbs = {
 	bindTopicResponse: function() {
 		$('.topic .response').live('click', function() {
 			var $topic = $(this).parents('div.topic');
-			var resInput = bbs.buildResInput();
+			var resInput = bbs.$input_restmp.clone(true);
 			resInput.insertAfter($topic.find('p.detail'));
 			$topic.find('.input-res-button input').toggle();
 		});
@@ -230,24 +230,25 @@ var bbs = {
 	 */
 	getTopic: function(_docId) {
 		var callback = null;
-
+		var $doc = null;
 		if (_docId) {
 			// docId ’¤¬’Í­’¤ë’¾ì’¹ç
 			callback = function(res) {
-				bbs.buildTopic(res);
+				$doc = bbs.buildTopic(res);
+				bbs.displayTopic($doc);
 			};
 			je.GET(bbs.docType, _docId, callback);
 		} else {
 			// docId ’¤¬’Ìµ’¤¤’¾ì’¹ç
 			callback = function(res) {
 				for (var i in res) {
-					bbs.buildTopic(res[i]);
+					$doc = bbs.buildTopic(res[i]);
+					bbs.displayTopic($doc);
 				}
 			};
 			je.GET(bbs.docType, callback);
 		}
 	},
-
 
 	/**
 	 * doc ’¤ò’¼õ’¤±’¼è’¤ê Topic ’¤ò’ÁÈ’¤ß’Î©’¤Æ’¤ë’¡£
@@ -281,8 +282,19 @@ var bbs = {
  				});
 			}
 		}
-		$tmp.insertAfter('.topic:last');
+		return $tmp;
 	},
+
+
+	/**
+	 * Topic ’¤Î jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È’¤ò’¼õ’¤±’¼è’¤ê’¡¢
+	 * ’µ­’»ö’¤Î’ºÇ’¸å’¤Ë’É½’¼¨’¤¹’¤ë’¡£
+	 * @param {object} ’É½’¼¨’¤·’¤¿’¤¤ Topic ’¤Î jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 */
+	displayTopic: function($doc) {
+		$doc.insertAfter('.topic:last');
+	},
+
 
 	/**
 	 * resId ’¤ò’¼õ’¤±’¼è’¤ê’¡¢’¤½’¤Î’ÃÍ’¤ò’ºï’½ü’¤·’¤¿ array ’¤ò’ÊÖ’¤¹’¡£
@@ -332,27 +344,36 @@ var bbs = {
 		return $p;
 	},
 
-
-	buildResInput: function(target) {
-		//response’¤ò’É½’¼¨’¤¹’¤ë’ÎÎ’°è’¤ò’³Î’ÊÝ
-		var tmp = bbs.$input_restmp.clone(true);
-		return tmp;
-	},
-
+	/**
+	 * ’¿·’¤·’¤¤ response ’¤ò topic ’¤Ë’É³’¤Å’¤±’¤ë’¡£
+	 * docId ’¤Ë’³º’Åö’¤¹’¤ë doc ’¤ò’¼è’ÆÀ’¤·’¡¢
+	 * response ’ÇÛ’Îó’¤Î’Ãæ’¤Ë resId ’¤Î’ÃÍ’¤ò’²Ã’¤¨’¤ë’¡£
+	 * ’¹¹’¿·’¤·’¤¿ response ’¤ò PUT ’¤Ç’¥Ñ’¡¼’¥·’¥ã’¥ë’¥¢’¥Ã’¥×’¥Ç’¡¼’¥È’¤¹’¤ë’¡£
+	 * @param {string} docId ’¹¹’¿·’ÂÐ’¾Ý’¤Î doc ’¤Î id
+	 * @param {string} resId ’É³’¤Å’¤±’¤ë response ’¤Î id
+	 */
 	addResIdToDoc: function(docId, resId) {
 		var callback = function(data) {
+			// response ’ÇÛ’Îó’¤Ë resId ’¤ò’²Ã’¤¨’¤ë’¡£
 			var responseArray = JSON.parse(data.response);
 			responseArray.push(resId);
-
-			je.PUT(bbs.docType, docId, {response: JSON.stringify(responseArray)}, function(data) {
-
-		    });
+			// ’¹¹’¿·’¤·’¤¿ response ’¤ò doc ’¤Ë’È¿’±Ç’¡£
+			je.PUT(bbs.docType, docId, {response: JSON.stringify(responseArray)}, function(data) { });
 		};
+		// ’³º’Åö’¤¹’¤ë doc ’¤ò’¼è’ÆÀ’¡£
 		je.GET(bbs.docType, docId, callback);
 	},
 
-	showResponse: function(_docId, res) {
- 		var $topic = $('#' + _docId);
+	/**
+	 * ’¥ì’¥¹’Åê’¹Æ’½ª’Î»’¸å’¤Ë’¡¢’Æþ’ÎÏ’Íó’¤ò’¾Ã’¤·
+	 * ’¥Ü’¥¿’¥ó’¤ò’¸µ’¤Ë’Ìá’¤¹’¡£
+	 * ’¥ì’¥¹’¤Î’¥Ç’¡¼’¥¿’¤ò response ’¤Î’ºÇ’¸å’Èø’¤Ë
+	 * ’²Ã’¤¨’¤ë’¡£
+	 * @param {string} docId 
+	 * @param {string} resId 
+	 */
+	showResponse: function(docId, res) {
+ 		var $topic = $('#' + docId);
 
 		$topic.find('.input-res-field').remove();
 		$topic.find('.input-res-button input').toggle();
