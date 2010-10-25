@@ -393,7 +393,10 @@ $(function() {
 		  autoHeight: false
 	  });
 
+	  // GUI ’¤Î’½é’´ü’²½
  	  bbs.init();
+	  
+	  // ’ºÇ’½é’¤Î’¥É’¥­’¥å’¥á’¥ó’¥È’¼è’ÆÀ
  	  bbs.getTopic();
 });
 
