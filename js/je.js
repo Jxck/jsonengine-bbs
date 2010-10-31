@@ -1,4 +1,6 @@
-log = function(data) { if (console.log) {console.log(data);}};
+log = function(a,b){
+//	if(console.log){(a)? console.log(a) :	console.log(a);console.log(b);}
+};
 var je = {
 	baseURI: '/_je/',
 
@@ -13,7 +15,7 @@ var je = {
 				callback(res);
 			},
 			error: function(xhr, status, error) {
-//				log(error);
+				log(error);
 			}
 		});
 	},
@@ -49,17 +51,17 @@ var je = {
 			url: url,
 			data: {'sort': '_createdAt.asc'},
 			beforeSend: function(xhr) {
-//				log(xhr);
+				log(xhr);
 			},
 			success: function(res) {
-//				log(res);
+				log(res);
 				callback(res);
 			},
 			error: function(xhr, status, error) {
-//				log(error);
+				log(error);
 			},
 			complete: function(xhr, status) {
-//				log(xhr);
+				log(xhr);
 			}
 		});
 	},
@@ -70,7 +72,7 @@ var je = {
 			url: je.baseURI + docType + '/' + docId,
 			data: data,
 			success: function(res) {
-//				log(res);
+				log(res);
 				callback(res);
 			},
 			error: function(xhr) {

@@ -1,4 +1,4 @@
-log = function(data) {if (console.log) {console.log(data);}};
+//log = function(data) {if (console.log) {console.log(data);}};
 var mock = {
 
 	ALNUMS: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',

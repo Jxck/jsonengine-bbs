@@ -1,13 +1,15 @@
-// Copyright
-
 /**
  * @fileoverview
- * require jsonengine.
+ * this is the sample bbs application of jsonengine.
+ *
+ * @require jsonengine[http://code.google.com/p/jsonengine/]
+ * @require jQuery1.4.2
  * @author block.rxckin.beats@gmail.com (id:Jxck)
  */
 
-
-//log = function(a){ 	if(console.log) console.log(a);};
+log = function(a,b) {
+//	if(console.log){(a)? console.log(a) :	console.log(a);console.log(b);}
+};
 //je = mock;
 var bbs = {
 
@@ -68,7 +70,7 @@ var bbs = {
 			}
 			// ’µ­’»ö’¥Ç’¡¼’¥¿’¤È’¡¢res ’¤ò’Æþ’¤ì’¤ë’¤¿’¤á’¤Î’¶õ’ÇÛ’Îó’¤ò’Á÷’¤ë’¡£
 			bbs.postTopic(title, detail, '[]');
-			// ’Æþ’ÎÏ’Íó’¤ò’¶õ’¤Ë’¤¹’¤ë’¡£							 
+			// ’Æþ’ÎÏ’Íó’¤ò’¶õ’¤Ë’¤¹’¤ë’¡£
 			$('#input-new-clear').click();
 		});
 	},
@@ -100,14 +102,20 @@ var bbs = {
 	 */
 	bindTopicDelete: function() {
 		$('.topic .delete').live('click', function() {
+			// delete ’¥Ü’¥¿’¥ó’¤¬’²¡’¤µ’¤ì’¤¿ topic ’¤Î docId ’¤ò’¼è’ÆÀ
 			var _docId = $(this).parents('div.topic').attr('id');
+			// ’³Î’Ç§
 			if (confirm('really?')) {
+				// ’°ì’Ã¼’¤½’¤Î topic ’¤Î doc ’¤ò’¼è’ÆÀ’¤·’Ä¾’¤¹
 				var callback = function(data) {
-					var response = JSON.parse(data.response);
-					response.push(data._docId);
-					for (var i = 0; i < response.length; i++) {
-						je.DELETE(bbs.docType, response[i], function() {});
+					var responseArr = JSON.parse(data.response);
+					// responseArr ’ÇÛ’Îó’¤Ë topic ’¤Î docId ’¤ò’ÄÉ’²Ã
+					responseArr.push(data._docId);
+					// topic ’¤È responseArr ’´Þ’¤á’¤Æ’Á´’Éô’ºï’½ü
+					for (var i = 0; i < responseArr.length; i++) {
+						je.DELETE(bbs.docType, responseArr[i], function() {});
 					}
+					// dom ’¤ò’ºï’½ü
 					$('#' + data._docId).remove();
 				};
 				je.GET(bbs.docType, _docId, callback);
@@ -162,24 +170,34 @@ var bbs = {
 	/**
 	 * ’¥ì’¥¹’¤Î delete  ’¥Ü’¥¿’¥ó’¤Ø’¤Î’¥¤’¥Ù’¥ó’¥È’ÅÐ’Ï¿
 	 */
-	bindResponseDelete: function(){
+	bindResponseDelete: function() {
 		$('.delete-res').live('click', function() {
+			// ’¥ì’¥¹’¤Î docId ’¤ò’¼è’ÆÀ
 			var resId = $(this).parents('.res').attr('id');
+			// ’¥È’¥Ô’¥Ã’¥¯’¤Î docId ’¤ò’¼è’ÆÀ
 			var topicId = $(this).parents().parents('.topic').attr('id');
 
 			var callback = function(data) {
-				var tmparr = JSON.parse(data.response);
-				tmparr = bbs.deleteArrayElement(tmparr, topicId);
+				// res ’¤Î’ÇÛ’Îó’¤ò’¼è’ÆÀ
+				var responseArr = JSON.parse(data.response);
 
+				// ’¤½’¤³’¤«’¤é resId ’¤ò’ºï’½ü
+				responseArr = bbs.deleteArrayElement(responseArr, resId);
+
+				// topic ’¤Î response ’ÇÛ’Îó’¤ò’¹¹’¿·(resId ’¤È’¤Î’´Ø’Ï¢’¤ò’²ò’½ü)
 				je.PUT(bbs.docType,
 					   topicId,
-					   {response: JSON.stringify(tmparr)},
+					   {response: JSON.stringify(responseArr)},
 					   function() {}
 					  );
 
+				// resId ’¤Î doc ’¤ò’ºï’½ü
 				je.DELETE(bbs.docType, resId, function() {});
+
+				// dom ’¤ò’ºï’½ü
 				$('#' + resId).remove();
 			};
+			// ’°ì’Ã¼’¤½’¤Î topic ’¤Î doc ’¤ò’¼è’ÆÀ’¤·’Ä¾’¤¹
 			je.GET(bbs.docType, topicId, callback);
 		});
 	},
@@ -253,8 +271,8 @@ var bbs = {
 	/**
 	 * doc ’¤ò’¼õ’¤±’¼è’¤ê Topic ’¤ò’ÁÈ’¤ß’Î©’¤Æ’¤ë’¡£
 	 * ’ÁÈ’¤ß’Î©’¤Æ’¤¿ jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È’¤ò’ÊÖ’¤¹’¡£
-	 * @param {object} doc 
-	 * @return {object} ’ÁÈ’¤ß’Î©’¤Æ’¤¿ jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 * @param {object} doc
+	 * @return {object} ’ÁÈ’¤ß’Î©’¤Æ’¤¿ jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È.
 	 */
 	buildTopic: function(doc) {
 		//’¼õ’¤±’¼è’¤Ã’¤¿doc’¤ò’¸µ’¤ËTopic’¤ò’ÁÈ’¤ß’Î©’¤Æ’É½’¼¨’¤¹’¤ë’¡£
@@ -289,7 +307,7 @@ var bbs = {
 	/**
 	 * Topic ’¤Î jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È’¤ò’¼õ’¤±’¼è’¤ê’¡¢
 	 * ’µ­’»ö’¤Î’ºÇ’¸å’¤Ë’É½’¼¨’¤¹’¤ë’¡£
-	 * @param {object} ’É½’¼¨’¤·’¤¿’¤¤ Topic ’¤Î jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
+	 * @param {object} ’É½’¼¨’¤·’¤¿’¤¤ Topic ’¤Î jquery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È.
 	 */
 	displayTopic: function($doc) {
 		$doc.insertAfter('.topic:last');
@@ -349,8 +367,8 @@ var bbs = {
 	 * docId ’¤Ë’³º’Åö’¤¹’¤ë doc ’¤ò’¼è’ÆÀ’¤·’¡¢
 	 * response ’ÇÛ’Îó’¤Î’Ãæ’¤Ë resId ’¤Î’ÃÍ’¤ò’²Ã’¤¨’¤ë’¡£
 	 * ’¹¹’¿·’¤·’¤¿ response ’¤ò PUT ’¤Ç’¥Ñ’¡¼’¥·’¥ã’¥ë’¥¢’¥Ã’¥×’¥Ç’¡¼’¥È’¤¹’¤ë’¡£
-	 * @param {string} docId ’¹¹’¿·’ÂÐ’¾Ý’¤Î doc ’¤Î id
-	 * @param {string} resId ’É³’¤Å’¤±’¤ë response ’¤Î id
+	 * @param {string} docId ’¹¹’¿·’ÂÐ’¾Ý’¤Î doc ’¤Î id.
+	 * @param {string} resId ’É³’¤Å’¤±’¤ë response ’¤Î id.
 	 */
 	addResIdToDoc: function(docId, resId) {
 		var callback = function(data) {
@@ -369,8 +387,8 @@ var bbs = {
 	 * ’¥Ü’¥¿’¥ó’¤ò’¸µ’¤Ë’Ìá’¤¹’¡£
 	 * ’¥ì’¥¹’¤Î’¥Ç’¡¼’¥¿’¤ò response ’¤Î’ºÇ’¸å’Èø’¤Ë
 	 * ’²Ã’¤¨’¤ë’¡£
-	 * @param {string} docId 
-	 * @param {string} resId 
+	 * @param {string} docId
+	 * @param {string} resId
 	 */
 	showResponse: function(docId, res) {
  		var $topic = $('#' + docId);
@@ -384,10 +402,10 @@ var bbs = {
 };
 
 $(function() {
-	  //Accordion
+	  // jQuery UI ’¤Î Accordion
 	  $('#accordion').accordion({
 		  header: 'h3',
-// 		  active : 0,
+ 		  //active : 0,
  		  active: false,
 		  collapsible: true,
 		  autoHeight: false
@@ -395,7 +413,7 @@ $(function() {
 
 	  // GUI ’¤Î’½é’´ü’²½
  	  bbs.init();
-	  
+
 	  // ’ºÇ’½é’¤Î’¥É’¥­’¥å’¥á’¥ó’¥È’¼è’ÆÀ
  	  bbs.getTopic();
 });
