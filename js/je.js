@@ -4,7 +4,7 @@ log = function(a,b){
 var je = {
 	baseURI: '/_je/',
 
-	POST: function(docType, data ,callback) {
+	POST: function(docType, data, callback, error) {
 		var jsonparam = { _doc: JSON.stringify(data) };
 		$.ajax({
 			type: 'post',
@@ -12,10 +12,11 @@ var je = {
 			data: jsonparam,
 			dataType: 'json',
 			success: function(res,dataType) {
-				callback(res);
+				if(callback) callback(res, dataType);
 			},
 			error: function(xhr, status, error) {
-				log(error);
+				log(xhr);
+				if(error) error(xhr, status, error);
 			}
 		});
 	},
@@ -34,9 +35,9 @@ var je = {
 	 *   error : function(){},
 	 *   complete : function(){}
 	 * }
-	 * @param {string} id ã‚³ãƒ”ãƒ¼ã—ãŸã„ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã® id. ex '#template'
-	 * @param {boolean} del ã‚³ãƒ”ãƒ¼ã—ãŸãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’æ¶ˆã™ã‹, false ãªã‚‰æ¶ˆã•ãš hide()
-	 * @return {object} ã‚³ãƒ”ãƒ¼ç”¨ã® id ã‚’æ¶ˆå»ã—ãŸ jQuery ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+	 * @param {string} id ’¥³’¥Ô’¡¼’¤·’¤¿’¤¤’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤Î id. ex '#template'
+	 * @param {boolean} del ’¥³’¥Ô’¡¼’¤·’¤¿’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¾Ã’¤¹’¤«, false ’¤Ê’¤é’¾Ã’¤µ’¤º hide()
+	 * @return {object} ’¥³’¥Ô’¡¼’ÍÑ’¤Î id ’¤ò’¾Ã’µî’¤·’¤¿ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
 	 */
 	GET: function(docType, docId, callback) {
 		var url = je.baseURI + docType;
@@ -51,17 +52,17 @@ var je = {
 			url: url,
 			data: {'sort': '_createdAt.asc'},
 			beforeSend: function(xhr) {
-				log(xhr);
+//				log(xhr);
 			},
 			success: function(res) {
-				log(res);
+//				log(res);
 				callback(res);
 			},
 			error: function(xhr, status, error) {
-				log(error);
+//				log(error);
 			},
 			complete: function(xhr, status) {
-				log(xhr);
+//				log(xhr);
 			}
 		});
 	},
@@ -72,7 +73,7 @@ var je = {
 			url: je.baseURI + docType + '/' + docId,
 			data: data,
 			success: function(res) {
-				log(res);
+//				log(res);
 				callback(res);
 			},
 			error: function(xhr) {
@@ -84,8 +85,8 @@ var je = {
 	},
 
 	DELETE: function(docType, docId, callback) {
-		//ã‚‚ã—å¼•æ•°ãŒ2ã¤ã ã£ãŸã‚‰docTypeã§æ¶ˆã™ã€‚
-		//3ã¤ã ã£ãŸã‚‰docIdã§æ¶ˆã™ã€‚
+		//’¤â’¤·’°ú’¿ô’¤¬2’¤Ä’¤À’¤Ã’¤¿’¤édocType’¤Ç’¾Ã’¤¹’¡£
+		//3’¤Ä’¤À’¤Ã’¤¿’¤édocId’¤Ç’¾Ã’¤¹’¡£
 		var url = je.baseURI + docType;
 		if (arguments.length === 3) {
 			url += '/' + docId;

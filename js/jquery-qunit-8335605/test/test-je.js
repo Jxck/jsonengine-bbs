@@ -1,8 +1,18 @@
+log = function(a,b){
+	if(console.log){(!b)? console.log(a) :	console.log(a);console.log(b);}
+};
 module('je', {
+	baseURI: null,
 	testdata: null,
 	docType: null,
 	docId: null,
-	getDocId: function() {
+
+	/**
+	 * mock of docId generator
+	 * 
+	 * @return {string} docId
+	 */
+	_getDocId: function() {
 		var docId = '';
 		var ALNUMS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		var digits = 32;
@@ -14,15 +24,23 @@ module('je', {
 	},
 
 	setup: function() {
+		this.baseURI = '../../../../../_je/',
 		this.testdata = {
 			'key' : 'value',
 			'arr' : ['a', 1, true],
 			'nest' : { 'nested' : {'nested' : 'value' }}
 		};
+		this.testdata2 = {
+			'key' : 'value2',
+			'arr' : ['b', 2, false],
+			'nest' : { 'nested2' : {'nested2' : 'value2' }}
+		};
+
 		this.docType = 'test';
 	},
 
 	teardown: function() {
+		this.basesURI = null;
 		this.testdata = null;
 		this.docType = null;
 		this.docId = null;
@@ -30,6 +48,7 @@ module('je', {
 });
 
 test('test of test', function() {
+	// all five method are exist
 	expect(5);
 	ok(je, 'je');
 	ok(je.POST, 'je.POST');
@@ -64,7 +83,7 @@ asyncTest('POST with specify the docId in doc parameter', function() {
 	expect(9);
 	var docType = this.docType;
 	var testdata = this.testdata;
-	testdata._docId = this.getDocId();
+	testdata._docId = "testId"; //this._getDocId();
 
 	var callback = function(data) {
  		setTimeout(function() {
@@ -80,11 +99,76 @@ asyncTest('POST with specify the docId in doc parameter', function() {
   			same(data.nest, testdata.nest);
 
   			same(typeof data._docId, 'string');
-  			same(data._docId, testdata._docId);
+  			//same(data._docId, testdata._docId);
+			same(data._docId, "testId");
 
  		},10);
 	};
 	je.POST(docType, testdata, callback);
+});
+
+test('POST with specify the conflicted docId in doc parameter', function() {
+//	expect(9);
+	var baseURI = this.baseURI;
+	var docType = this.docType;
+	var testdata = this.testdata;
+	var testdata2 = this.testdata2;
+	testdata._docId = 'testId2';
+	testdata2._docId = 'testId2';
+
+	var jsonparam = { _doc: JSON.stringify(testdata) };
+	$.ajax({
+		async: true,
+		type: 'post',
+		url: baseURI + docType,
+		data: jsonparam,
+		dataType: 'json',
+		success: function(res,dataType) {
+//			log(res);
+		},
+		error: function(xhr, status, error) {
+//			log(xhr);
+		}
+	});
+	
+	stop();
+	
+	var callback = function(data) {
+ 		setTimeout(function() {
+ 			start();
+ 			ok(data, 'callback catches response data');
+
+  			same(typeof data._docId, 'string', 'docId is string');
+			same(data._docId, 'testId2', 'docId is testId2');
+
+  			same(typeof data.key, 'string');
+  			same(data.key, testdata2.key);
+
+  			same(typeof data.arr, 'object');
+  			same(data.arr, testdata2.arr);
+
+  			same(typeof data.nest, 'object');
+  			same(data.nest, testdata2.nest);
+
+
+ 		},10);
+	};
+	je.POST(docType, testdata2, callback);
+
+
+// 	var sameRequest = function(){
+// 		setTimeout(function() {
+// 			start();
+// 			je.POST(docType, testdata, function() {}, function(a,b,c) { 
+// 				setTimeout(function() {
+// 					log(a); 
+// 				});
+// 			});
+// 		},10);
+// 	};
+
+// 	je.POST(docType, testdata, sameRequest);
+
 });
 
 
@@ -187,4 +271,3 @@ asyncTest('PUT partial update', function() {
 	};
 	je.POST(docType, testdata, callback);
 });
-
