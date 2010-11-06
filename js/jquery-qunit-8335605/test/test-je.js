@@ -155,20 +155,6 @@ test('POST with specify the conflicted docId in doc parameter', function() {
 	};
 	je.POST(docType, testdata2, callback);
 
-
-// 	var sameRequest = function(){
-// 		setTimeout(function() {
-// 			start();
-// 			je.POST(docType, testdata, function() {}, function(a,b,c) { 
-// 				setTimeout(function() {
-// 					log(a); 
-// 				});
-// 			});
-// 		},10);
-// 	};
-
-// 	je.POST(docType, testdata, sameRequest);
-
 });
 
 

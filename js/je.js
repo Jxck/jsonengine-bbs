@@ -21,24 +21,6 @@ var je = {
 		});
 	},
 
-	/**
-	 * (docType, docId, callback) 
-	 * (docType, callback)
-	 * (param)
-	 * 
-	 * param = {
-	 *   docType : 'docType',
-	 *   docId : 'docId',
-	 *   callback : function(){},
-	 *   beforeSend : function(){},
-	 *   sucess : function(){},
-	 *   error : function(){},
-	 *   complete : function(){}
-	 * }
-	 * @param {string} id ’¥³’¥Ô’¡¼’¤·’¤¿’¤¤’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤Î id. ex '#template'
-	 * @param {boolean} del ’¥³’¥Ô’¡¼’¤·’¤¿’¥Æ’¥ó’¥×’¥ì’¡¼’¥È’¤ò’¾Ã’¤¹’¤«, false ’¤Ê’¤é’¾Ã’¤µ’¤º hide()
-	 * @return {object} ’¥³’¥Ô’¡¼’ÍÑ’¤Î id ’¤ò’¾Ã’µî’¤·’¤¿ jQuery ’¥ª’¥Ö’¥¸’¥§’¥¯’¥È
-	 */
 	GET: function(docType, docId, callback) {
 		var url = je.baseURI + docType;
 		if (arguments.length === 3) {
@@ -85,8 +67,8 @@ var je = {
 	},
 
 	DELETE: function(docType, docId, callback) {
-		//’¤â’¤·’°ú’¿ô’¤¬2’¤Ä’¤À’¤Ã’¤¿’¤édocType’¤Ç’¾Ã’¤¹’¡£
-		//3’¤Ä’¤À’¤Ã’¤¿’¤édocId’¤Ç’¾Ã’¤¹’¡£
+		// (docType, docId) => delete by docId
+		// (docType, docId, callback) => delete by docType
 		var url = je.baseURI + docType;
 		if (arguments.length === 3) {
 			url += '/' + docId;
