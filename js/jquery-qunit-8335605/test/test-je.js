@@ -216,22 +216,22 @@ asyncTest('DELETE by docType', function() {
 	je.DELETE(docType, callback);
 });
 
-asyncTest('DELETE by docId exist', function() {
-	expect(1);
-	var docType = this.docType;
-	var testdata = this.testdata;
-	var callback = function(resdata) {
-		setTimeout(function() {
-			je.DELETE(docType, resdata._docId, function(data) {
-				setTimeout(function() {
-					start();
-					same(data, '', 'callback catches empty data');
-				},30);
-			});
- 		},30);
-	};
-	je.POST(docType, testdata, callback);
-});
+// asyncTest('DELETE by docId exist', function() {
+// 	expect(1);
+// 	var docType = this.docType;
+// 	var testdata = this.testdata;
+// 	var callback = function(resdata) {
+// 		setTimeout(function() {
+// 			je.DELETE(docType, resdata._docId, function(data) {
+// 				setTimeout(function() {
+// 					start();
+// 					same(data, '', 'callback catches empty data');
+// 				},30);
+// 			});
+//  		},30);
+// 	};
+// 	je.POST(docType, testdata, callback);
+// });
 
 asyncTest('PUT partial update', function() {
 	expect(4);
