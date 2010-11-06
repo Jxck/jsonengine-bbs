@@ -2,7 +2,7 @@
  * @fileoverview
  * this is the sample bbs application of jsonengine.
  * require jsonengine[http://code.google.com/p/jsonengine/]
- * require jQuery1.4.2.
+ * require jQuery1.4.2, je.js
 
  * @author block.rxckin.beats@gmail.com (id:Jxck)
  */
